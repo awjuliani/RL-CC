@@ -1,8 +1,8 @@
 # Reinforcement Learning Control Center
+A d3.js web interface that allows a user to view their RL agent's performance during training.
 
 ![RL Control Center](/image.png)
 
-A d3.js web interface that allows a user to view their RL agen'ts performance during training.
 
 Current version displays:
 * Reward over time
@@ -11,6 +11,6 @@ Current version displays:
 * Agent's DDDQN activation during episode
 
 
-To try a live verion, go [here](http://awjuliani.github.io/Center/).
+To try a live verion on an already trained network, go [here](http://awjuliani.github.io/Center/).
 
-See [this Medium post](https://medium.com/p/4f27b134bb2a) for more information on how to use this.
+See [this Medium post](https://medium.com/p/4f27b134bb2a) for more information on how to use the control center, and the motivation behind it's creation.
