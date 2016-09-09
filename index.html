@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+
+<style>
+
+.holder {
+  margin: 0 auto;
+  top: 100px;
+  right: 50px;
+  bottom: 0;
+  left: 50px;
+  width: 1200px;
+}
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+
+.y0line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.bline {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.y1line {
+  fill: none;
+  stroke: green;
+  stroke-width: 1.5px;
+}
+
+h1 {
+text-align: center;
+}
+
+h4 {
+text-align: center;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.blockText {
+    -webkit-user-select: none;
+    -moz-user-select: none; 
+    -ms-user-select: none;
+}
+
+</style>
+<title>Reinforcement Learning Control Center</title>
+<body>
+<h1>Reinforcement Learning Control Center *</h1>
+<div class="holder">
+<svg class="graphHolder"></svg>
+<svg class="Qholder">
+    <g>
+        <rect width="200px" height="200px" transform="translate(180,50)" stroke-width="3px" fill="black" stroke="gray"></rect>
+        <rect width="200px" height="200px" transform="translate(180,50)" stroke-width="3px" fill="None" stroke="gray"></rect>
+        <image class="exampleIMG" width="200px" height="200px" href="" transform="translate(180,50)"></image>
+        <text class="eT" x="415" y="75" dy="1em" font-size="12pt">Episode - </text>
+        <text class="acT" x="415" y="115" dy="1em" font-size="12pt">Action - </text>
+        <text class="rT" x="415" y="155" dy="1em" font-size="12pt">Reward - </text>
+        <text class="sT" x="415" y="195" dy="1em" font-size="12pt">State - </text>
+        <g class="moveButton" onmouseup="backEXPost()" onmousedown="backEXPre()">
+            <circle cx="125" class="bcir" cy="145" r="25" fill-opacity="0.05" fill="steelblue"><title>0</title></circle>
+            <image class="backEx"  width="50" height="50" opacity="0.25" transform-origin="center" transform="translate(100,120),rotate(-90 25 25)" href="./assets/arrow.png"></image>
+        </g>
+        <g class="moveButton" onmouseup="forwardEXPost()" onmousedown="forwardEXPre()">
+            <circle cx="585" class="fcir" cy="145" r="25" fill-opacity="0.05" fill="steelblue"><title>0</title></circle>
+            <image class="forwardEx"  width="50" height="50" opacity="0.25" transform-origin="center" transform="translate(560,120),rotate(90 25 25)" href="./assets/arrow.png"></image>
+        </g>
+    </g>
+    <g>
+        <text x="560" y="510" dy="1em" font-size="12pt" class="blockText" style="pointer-events:none;">Value</text>
+        <line x1="540" y1="500" x2="620" y2="500" style="stroke:LightGray ;stroke-width:2" />
+        <text x="265" y="510" dy="1em" class="blockText" font-size="12pt">Advantage</text>
+        <line x1="120" y1="500" x2="490" y2="500" style="stroke:LightGray ;stroke-width:2" />
+
+        <circle cx="580" cy="375" r="1" class="valueCircle" stroke="gray" stroke-width="1px" fill-opacity="0.5" fill="gray"><title>1.82629</title></circle>
+        <text class="vt blockText" text-anchor="middle" x="580" y="425" dy="1em" font-size="10pt">0.0</text>
+        <g>
+            <rect class="abox" width="100px" height="170px" transform="translate(205,330)" fill="steelblue" fill-opacity="0.1"></rect>
+            <line class="aline" x1="205" y1="498" x2="305" y2="498" style="stroke:steelblue ;stroke-width:5" />
+        </g>
+        <g>
+            <image width="50" height="50" transform-origin="center" transform="translate(130,445)" href="./assets/arrow.png"></image>
+            <image width="50" height="50" transform="translate(230,445),rotate(180 25 25)" href="./assets/arrow.png" style="transform-origin: center center 0px;"></image>
+            <image width="50" height="50" transform-origin="center" transform="translate(330,445),rotate(-90 25 25)" href="./assets/arrow.png"></image>
+            <image width="50" height="50" transform-origin="center" transform="translate(430,445),rotate(90 25 25)" href="./assets/arrow.png"></image>
+            <image width="50" height="50" transform-origin="center" transform="translate(555,445),rotate(90 25 25)" href="./assets/star.png"></image>
+        </g>
+        <circle class="a0" cx="155" cy="375" r="1" stroke="gray" stroke-width="1px" fill-opacity="0.5" fill="gray"><title>0</title></circle>
+        <circle cx="255" class="a1" cy="375" r="1" stroke="gray" stroke-width="1px" fill-opacity="0.5" fill="gray"><title>0</title></circle>
+        <circle cx="355" class="a2" cy="375" r="1" stroke="gray" stroke-width="1px" fill-opacity="0.5" fill="gray"><title>0</title></circle>
+        <circle cx="455" class="a3" cy="375" r="1" stroke="gray" stroke-width="1px" fill-opacity="0.5" fill="gray"><title>0</title></circle>
+        <text class="a0t blockText" text-anchor="middle" x="155" y="425" dy="1em" font-size="10pt">0.0</text>
+        <text class="a1t blockText" text-anchor="middle" x="255" y="425" dy="1em" font-size="10pt">0.0</text>
+        <text class="a2t blockText" text-anchor="middle" x="355" y="425" dy="1em" font-size="10pt">0.0</text>
+        <text class="a3t blockText" text-anchor="middle" x="455" y="425" dy="1em" font-size="10pt">0.0</text>
+    </g>
+</svg>
+</div>
+<p class="blockText" style="text-align:center">Arthur Juliani - 2016</p>
+</body>
+<script>
+
+var margin = {top: 50, right: 20, bottom: 30, left: 100},
+    width = 500 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y0 = d3.scale.linear()
+    .range([height, 0]);
+    
+var y1 = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var y0Axis = d3.svg.axis()
+    .scale(y0)
+    .orient("left");
+    
+var y1Axis = d3.svg.axis()
+    .scale(y1)
+    .orient("left");
+    
+var bisectX = d3.bisector(function(d) { return d.Episode; }).left;
+
+var y0line = d3.svg.line()
+    .x(function(d) { return x(d.Episode); })
+    .y(function(d) { return y0(d.Reward); });
+    
+var bline = d3.svg.line()
+    .x(function(d) { return x(d.Episode); })
+    .y(function(d) { return y0(0); });
+    
+var y1line = d3.svg.line()
+    .x(function(d) { return x(d.Episode); })
+    .y(function(d) { return y1(d.Length); });
+
+var svg = d3.select(".graphHolder")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height *2.5 + margin.top + margin.bottom);
+var g1 = svg.append("g")
+    .attr("class","graphA")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var g2 = svg.append("g")
+    .attr("class","graphB")
+    .attr("transform", "translate(" + margin.left + "," + (margin.top + height + 50) +  ")");
+    
+var actionSVG = d3.select(".Qholder")
+        .attr("width", width*1.5 + margin.left + margin.right)
+        .attr("height", height *2.5 + margin.top + margin.bottom);
+        
+var currentEx = 0;
+var currentState = 0;
+var maxEx = 0;
+
+var canResetLine = true;
+var goingForward = false;
+var goingBackward = false;
+var lastState = false;
+var globalData = null;
+
+d3.csv("log.csv", function(error, data) {
+  if (error) throw error;
+       	data.forEach(function(d) {
+	    	d.Episode = +d.Episode;
+	    	d.Reward = +d.Reward;
+	    	d.Length = +d.Length;
+	    });
+  x.domain(d3.extent(data, function(d) { return d.Episode; }));
+  y0.domain(d3.extent(data, function(d) { return d.Reward; }));
+  y1.domain(d3.extent(data, function(d) { return d.Length; }));
+  
+  globalData = data;
+
+  g1.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+      
+  g2.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  g1.append("g")
+      .attr("class", "y0 axis")
+      .style("fill","steelblue")
+      .call(y0Axis)
+    .append("text")
+      .attr("transform", "rotate(-0)")
+      .attr("y", -20)
+      .attr("x",-30)
+      .attr("dy", ".71em")
+      .attr("font-size",'14px')
+      .text("Reward");
+
+  g2.append("g")
+      .attr("class", "y1 axis")
+      .style("fill","green")
+      .call(y1Axis)
+    .append("text")
+      .attr("transform", "rotate(-0)")
+      .attr("y", -20)
+      .attr("x",-30)
+      .attr("dy", ".71em")
+      .attr("font-size",'14px')
+      .text("Episode length");
+
+  g1.append("path")
+      .datum(data)
+      .attr("class", "y0line")
+      .attr("d", y0line(data));
+    
+  g2.append("path")
+      .datum(data)
+      .attr("class", "y1line")
+      .attr("d", y1line(data));
+      
+  g1.append("path")
+        .datum(data)
+        .attr("class", "bline")
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("d", bline(data));
+        
+    var focusA = g1.append("g")
+      .attr("class", "focus focusA")
+      .style("display", null);
+
+  focusA.append("line")
+      .attr("y1", 0)
+      .attr("y2", height)
+      .attr("x0",0)
+      .attr("x1",1)
+      .attr("opacity",0.5)
+      .style("stroke","steelblue")
+      .style("stroke-width",1);
+
+  focusA.append("text")
+      .attr("x", -10)
+      .attr("y", -5)
+      .attr("fill","steelblue")
+      .attr("dy", ".35em");
+      
+  var focusB = g1.append("g")
+      .attr("class", "focus focusB")
+      .style("display", null);
+
+  focusB.append("line")
+      .attr("y1", 0)
+      .attr("y2", height)
+      .attr("x0",0)
+      .attr("x1",1)
+      .attr("opacity",0.5)
+      .style("stroke","green")
+      .style("stroke-width",1);
+
+  focusB.append("text")
+      .attr("x", -10)
+      .attr("y", -5)
+      .attr("fill","green")
+      .attr("dy", ".35em");
+
+    g1.append("rect")
+      .attr("class", "overlay")
+      .attr("id","overlayA")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() {canResetLine = false;})
+      .on("mouseleave",function() {canResetLine = true;})
+      .on("mousemove", mousemoveG1)
+      .on("mousedown", setEpisode);
+      
+    g2.append("rect")
+      .attr("class", "overlay")
+      .attr("id","overlayB")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() {canResetLine = false;})
+      .on("mouseleave",function() {canResetLine = true;})
+      .on("mousemove", mousemoveG2)
+      .on("mousedown", setEpisode);
+
+    function setEpisode() {
+        var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectX(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.Episode > d1.Episode - x0 ? d1 : d0;
+        currentEx = i
+        currentState = 0;
+        canResetLine = true;
+        updateData();
+    }
+
+  function mousemoveG1() {
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectX(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.Episode > d1.Episode - x0 ? d1 : d0;
+    focusA.attr("transform", "translate(" + x(d.Episode) + "," + 0 + ")");
+    focusA.select("text").text(Number(d.Reward).toFixed(2))
+    canResetLine = false;;
+  }
+  
+    function mousemoveG2() {
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectX(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.Episode > d1.Episode - x0 ? d1 : d0;
+    focusB.attr("transform", "translate(" + x(d.Episode) + "," + (height+50) + ")");
+    focusB.select("text").text(Number(d.Length).toFixed(2))
+    canResetLine = false;
+  }
+        
+    currentEx = data.length-1;
+    
+});
+
+
+function returnColor(number) {
+    if (number < 0) {
+        return "red";
+    }
+    else { return "green";}
+}
+
+function returnSize(number) {
+    var toReturn = Math.abs(number);
+    toReturn = toReturn *10;
+    if (toReturn > 35) {toReturn = 35;}
+    if (toReturn < 5) {toReturn = 5;}
+    return toReturn;
+
+}
+
+var inter = setInterval(function() {
+                updateData();
+        }, 1000); 
+        
+var moveForward = setInterval(function() {
+            
+            if (goingForward == true) {console.log("I'm being pressed"); forwardEX();} ;},10);
+
+var moveBackward = setInterval(function() {
+            if (goingBackward == true) {backEX();} ;},10);
+        
+function getLine(action) {
+    return [105 + 100*action,205 + 100*action];
+}
+
+function getSquare(action) {
+    return 105 + 100*action;
+
+}
+
+function labelAction(action) {
+    if (action == 0) {return "Up";}
+    if (action == 1) {return "Down";}
+    if (action == 2) {return "Left";}
+    if (action == 3) {return "Right";}
+}
+
+function backEX() {
+    currentEx = currentEx - 1;
+    currentState = 0;
+    if (currentEx < 0) {currentEx = 0;};
+    updateData();
+}
+
+function forwardEX() {
+    currentEx = currentEx + 1;
+    currentState = 0;
+    if (currentEx > maxEx) {currentEx = maxEx;};
+    updateData();
+}
+
+function forwardHover() {
+    var canHover = d3.select(".forwardEx").attr("opacity");
+}
+
+function forwardEXPre() {
+    goingForward = true;
+}
+
+function forwardEXPost() {
+    goingForward = false;
+}
+
+function backEXPre() {
+    goingBackward = true;
+}
+
+function backEXPost() {
+    goingBackward = false;
+}
+
+
+d3.selectAll(".moveButton").on("mouseover",function() {
+    if (d3.select(this).select("image").attr("opacity") != 0.1) {
+    d3.select(this).select("circle").transition().duration(100)
+        .attr("fill-opacity","0.5");
+        };
+
+});
+
+d3.selectAll(".moveButton").on("mouseleave",function() {
+    if (d3.select(this).select("image").attr("opacity") != 0.1) {
+    d3.select(this).select("circle").transition().duration(100)
+        .attr("fill-opacity","0.1");
+    };
+});
+
+updateData();
+
+function updateData() {
+
+    // Get the data again
+    d3.csv("log.csv", function(error, data) {
+       	data.forEach(function(d) {
+	    	d.Episode = +d.Episode;
+	    	d.Reward = +d.Reward;
+	    	d.Length = +d.Length;
+	    });
+
+    	// Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.Episode; }));
+      y0.domain(d3.extent(data, function(d) { return d.Reward; }));
+      y1.domain(d3.extent(data, function(d) { return d.Length; }));
+
+    // Select the section we want to apply our changes to
+    var g1 = d3.select(".graphA").transition();
+    var g2 = d3.select(".graphB").transition();
+    //var line = d3.svg.line()
+    //    .x(function(d) { return x(d.Episode); })
+    //    .y(function(d) { return y(d.Reward); });
+        
+    // Make the changes
+        g1.select(".y0line")   // change the line
+            .duration(500)
+            .attr("d", y0line(data));
+            
+        g2.select(".y1line")   // change the line
+            .duration(500)
+            .attr("d", y1line(data));
+            
+        g1.select(".bline").duration(500)
+            .attr("d", bline(data));
+
+        g1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+            
+        g2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+            
+        
+            
+        g1.select(".y0.axis") // change the y axis
+            .duration(500)
+            .call(y0Axis);
+        g2.select(".y1.axis") // change the z axis
+            .duration(500)
+            .call(y1Axis);
+            
+            
+         var focusA = d3.select(".focusA");
+         var focusB = d3.select(".focusB");   
+         
+    d3.selectAll("overlay").remove()
+    d3.select(".graphA").append("rect")
+      .attr("class", "overlay")
+      .attr("id","overlayA")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() {canResetLine = false;})
+      .on("mouseleave",function() {canResetLine = true;})
+      .on("mousemove", mousemoveG1B)
+      .on("mousedown", setEpisodeB);
+      
+    d3.select(".graphB").append("rect")
+      .attr("class", "overlay")
+      .attr("id","overlayB")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() {canResetLine = false;})
+      .on("mouseleave",function() {canResetLine = true;})
+      .on("mousemove", mousemoveG2B)
+      .on("mousedown", setEpisodeB);
+         
+    function setEpisodeB() {
+        var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectX(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.Episode > d1.Episode - x0 ? d1 : d0;
+        currentEx = i
+        currentState = 0;
+        canResetLine = true;
+        updateData();
+    }
+         
+        function mousemoveG1B() {
+            var x0 = x.invert(d3.mouse(this)[0]),
+                i = bisectX(data, x0, 1),
+                d0 = data[i - 1],
+                d1 = data[i],
+                d = x0 - d0.Episode > d1.Episode - x0 ? d1 : d0;
+            focusA.attr("transform", "translate(" + x(d.Episode) + "," + 0 + ")");
+            focusA.select("text").text(Number(d.Reward).toFixed(2))
+            canResetLine = false;;
+          }
+  
+        function mousemoveG2B() {
+            var x0 = x.invert(d3.mouse(this)[0]),
+                i = bisectX(data, x0, 1),
+                d0 = data[i - 1],
+                d1 = data[i],
+                d = x0 - d0.Episode > d1.Episode - x0 ? d1 : d0;
+            focusB.attr("transform", "translate(" + x(d.Episode) + "," + (height+50) + ")");
+            focusB.select("text").text(Number(d.Length).toFixed(2))
+            canResetLine = false;
+          }
+            
+    d3.select(".eT").text("Episode : " + Number(data.slice(currentEx)[0].Episode).toLocaleString());
+            
+    d3.csv(data.slice(currentEx)[0].LOG, function(error,data) {
+        d3.select(".acT").text("Action : " + labelAction(data.slice(currentState)[0].ACTION));
+        d3.select(".rT").text("Reward : " + Number(data.slice(currentState)[0].REWARD).toFixed(2));
+        d3.select(".sT").text("State : " + (currentState +1) + " / " + data.length);
+        d3.select(".abox").transition().duration(500).attr("transform", "translate(" + getSquare(data.slice(currentState)[0].ACTION) + "," + 330 + ")")
+        var linePos = getLine(data.slice(currentState)[0].ACTION);
+        d3.select(".aline").transition().duration(500).attr('x1',linePos[0]).attr('x2',linePos[1]);
+    
+        var vC = d3.select(".valueCircle")
+            vC.transition().duration(500).attr('r',returnSize(data.slice(currentState)[0].V))
+                .attr("fill",returnColor(data.slice(currentState)[0].V))
+                .attr("stroke",returnColor(data.slice(currentState)[0].V));
+            vC.select("title").text(data.slice(currentState)[0].V);
+            d3.select(".vt").text(Number(data.slice(currentState)[0].V).toFixed(2));
+    
+        var A0C = d3.select(".a0")
+            A0C.transition().duration(500).attr('r',returnSize(data.slice(currentState)[0].A0))
+                .attr("fill",returnColor(data.slice(currentState)[0].A0))
+                .attr("stroke",returnColor(data.slice(currentState)[0].A0));
+            A0C.select("title").text(data.slice(currentState)[0].A0);
+            d3.select(".a0t").text(Number(data.slice(currentState)[0].A0).toFixed(2));
+        
+        var A1C = d3.select(".a1")
+            A1C.transition().duration(500).attr('r',returnSize(data.slice(currentState)[0].A1))
+                .attr("fill",returnColor(data.slice(currentState)[0].A1))
+                .attr("stroke",returnColor(data.slice(currentState)[0].A1));
+            A1C.select("title").text(data.slice(currentState)[0].A1);
+            d3.select(".a1t").text(Number(data.slice(currentState)[0].A1).toFixed(2));
+        
+        var A2C = d3.select(".a2")
+            A2C.transition().duration(500).attr('r',returnSize(data.slice(currentState)[0].A2))
+                .attr("fill",returnColor(data.slice(currentState)[0].A2))
+                .attr("stroke",returnColor(data.slice(currentState)[0].A2));
+            A2C.select("title").text(data.slice(currentState)[0].A2);
+            d3.select(".a2t").text(Number(data.slice(currentState)[0].A2).toFixed(2));
+        
+        var A3C = d3.select(".a3")
+            A3C.transition().duration(500).attr('r',returnSize(data.slice(currentState)[0].A3))
+                .attr("fill",returnColor(data.slice(currentState)[0].A3))
+                .attr("stroke",returnColor(data.slice(currentState)[0].A3));
+            A3C.select("title").text(data.slice(currentState)[0].A3);
+            d3.select(".a3t").text(Number(data.slice(currentState)[0].A3).toFixed(2));
+    
+        if (currentState + 1 < data.length) 
+                {currentState = currentState + 1;} 
+            else if (currentState + 1 == data.length && lastState == false)
+                {currentState = currentState; lastState = true;}
+            else if (currentState + 1 == data.length && lastState == true) 
+                {currentState = 0; lastState = false;}
+    });
+
+    var currentIMG = d3.select('.exampleIMG').attr("href").substring(0,d3.select('.exampleIMG').attr("href").length-12);
+    if (data.slice(currentEx)[0].IMG != currentIMG) {
+        currentState = 0;
+        var randAdd = Math.floor((Math.random() * 10000) + 1);
+        d3.select('.exampleIMG').remove();
+        d3.select('.Qholder').append("image")
+            .attr("class",'exampleIMG')
+            .attr("transform", "translate(" + 180 + "," + 50 + ")")
+            .attr("opacity",0.0)
+            .attr("width",'200px')
+            .attr("height",'200px')
+            .attr("href",data.slice(currentEx)[0].IMG + "?random=" + randAdd)
+            .transition().delay(50)
+            .attr("opacity",1.0);
+        clearInterval(inter);
+        inter = setInterval(function() {
+                updateData();
+        }, 1000); 
+    };
+    
+
+        
+        d3.select('.backEx').attr('opacity',function() {if (currentEx == 0) {return 0.1;} else {return 0.9;}});
+        d3.select('.forwardEx').attr('opacity',function() {if (currentEx == data.length-1) {return 0.1;} else {return 0.9;}});
+        d3.select('.bcir').attr('fill-opacity',function() {if (currentEx == 0) {return 0.05;} else {return d3.select('.bcir').attr('fill-opacity');}});
+        d3.select('.fcir').attr('fill-opacity',function() {if (currentEx == data.length-1) {return 0.05;} else {return d3.select('.fcir').attr('fill-opacity');}});
+        
+        if (canResetLine == true) {
+            d3.select(".focusA").transition().attr("transform", "translate(" + x(data.slice(currentEx)[0].Episode) + "," + 0 + ")")
+                .select("text").text(Number(data.slice(currentEx)[0].Reward).toFixed(2));
+            d3.select(".focusB").transition().attr("transform", "translate(" + x(data.slice(currentEx)[0].Episode) + "," + (height+50) + ")")
+                .select("text").text(Number(data.slice(currentEx)[0].Length).toFixed(2));
+            }
+    maxEx = data.length-1;
+    });
+    
+}
+
+
+</script>
