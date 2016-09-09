@@ -7,8 +7,8 @@ A d3.js web interface that allows a user to view their RL agent's performance du
 Current version displays:
 * Reward over time
 * Episode length over time
-* Gifs of agent action during episode
-* Agent's DDDQN activation during episode
+* Animated gif of agent behavior during sample episodes
+* Agent's DDDQN activation during sample episodes
 
 
 To try a live verion on an already trained network, go [here](http://awjuliani.github.io/Center/).
